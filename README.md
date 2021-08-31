@@ -1,7 +1,6 @@
 # Chromebrew Launcher
 
 ## Add X/Wayland applications shortcut to Chrome/Chromium OS launcher
-### Crouton chroots are also supported
 
 ## Supported Systems
 - All architecture supported by Chromebrew
