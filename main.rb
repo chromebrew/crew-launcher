@@ -11,6 +11,11 @@ Dir.glob('lib/*.rb') do |file|
   require_relative file
 end
 
+def getUUID (exec)
+  uuid = File.basename(`grep -lR "'exec': '#{ARGV[1]} .*'" #{ConfigPath}/*.json`.lines[0])
+  return (uuid)? uuid : nil
+end
+
 def stopExistingDaemon
   # kill existing server daemon
   begin
@@ -26,7 +31,6 @@ def CreateProfile(cmd = nil, filename: nil)
   # convert parsed hash into json format
   desktop = DesktopFile.parse( DesktopFile.find((filename || cmd)) )
 
-  uuid = SecureRandom.uuid
   iconPath, iconSize, iconType = IconFinder.find(desktop['Desktop Entry']['Icon'])
   profile = {
     background_color: "black",
@@ -55,9 +59,15 @@ def CreateProfile(cmd = nil, filename: nil)
       end
   }
   
-  duplicate_profile = `grep -lR "'exec': '#{profile[:exec]}'" #{ConfigPath}/*.json`.strip
-  File.remove(duplicate_profile) unless duplicate_profile.empty?
-
+  duplicate_profile_uuid = getUUID(exec.split(' ')[0])
+  
+  if Args['update'] and duplicate_profile_uuid
+    uuid = duplicate_profile_uuid
+  else
+    uuid = SecureRandom.uuid
+    File.remove("#{ConfigPath}/#{duplicate_profile_uuid}.json") if duplicate_profile_uuid
+  end
+    
   File.write("#{ConfigPath}/#{uuid}.json", profile.to_json)
   return uuid, profile
 end
@@ -127,7 +137,7 @@ def StartWebDaemon
     end
     
     log = File.open("#{CacheDir}/log/cmd/#{uuid}.log", 'w')
-    spawn(ENV, cmd, {[:out, :err] => log})
+    spawn(cmd, {[:out, :err] => log})
   end
 
   # turn into a background procss
@@ -171,13 +181,13 @@ when 'server'
   stopExistingDaemon()
   StartWebDaemon()
 when 'remove'
-  file = `grep -lR "'exec': '#{ARGV[1]} .*'" #{ConfigPath}/*.json`.strip
+  uuid = getUUID(ARGV[1])
 
-  unless file.empty?
-    File.remove(file)
+  if uuid
+    File.remove("#{ConfigPath}/#{uuid}.json")
   else
     error "Error: Cannot find a profile for #{ARGV[1]} :/"
   end
 when 'uuid'
-  puts `grep -lR "'exec': '#{ARGV[1]} .*'" #{ConfigPath}/*.json`.lines.first.lightblue
+  puts getUUID(ARGV[1])
 end
