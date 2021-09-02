@@ -12,8 +12,8 @@ Dir.glob('lib/*.rb') do |file|
 end
 
 def getUUID (exec)
-  uuid = File.basename(`grep -lR "'exec': '#{ARGV[1]} .*'" #{ConfigPath}/*.json`.lines[0])
-  return (uuid)? uuid : nil
+  uuid = `grep -lR "'desktop_entry_file': '#{ARGV[1]} .*'" #{ConfigPath}/*.json 2> /dev/null`.lines[0]
+  return uuid
 end
 
 def stopExistingDaemon
@@ -30,6 +30,15 @@ end
 def CreateProfile(cmd = nil, filename: nil)
   # convert parsed hash into json format
   desktop = DesktopFile.parse( DesktopFile.find((filename || cmd)) )
+
+  duplicate_profile_uuid = getUUID(cmd)
+
+  if Args['update'] and duplicate_profile_uuid
+    uuid = duplicate_profile_uuid
+  else
+    uuid = SecureRandom.uuid
+    File.remove("#{ConfigPath}/#{duplicate_profile_uuid}.json") if duplicate_profile_uuid
+  end
 
   iconPath, iconSize, iconType = IconFinder.find(desktop['Desktop Entry']['Icon'])
   profile = {
@@ -58,16 +67,7 @@ def CreateProfile(cmd = nil, filename: nil)
         { action: action, name: v['Name'], url: url, exec: exec}
       end
   }
-  
-  duplicate_profile_uuid = getUUID(exec.split(' ')[0])
-  
-  if Args['update'] and duplicate_profile_uuid
-    uuid = duplicate_profile_uuid
-  else
-    uuid = SecureRandom.uuid
-    File.remove("#{ConfigPath}/#{duplicate_profile_uuid}.json") if duplicate_profile_uuid
-  end
-    
+ 
   File.write("#{ConfigPath}/#{uuid}.json", profile.to_json)
   return uuid, profile
 end

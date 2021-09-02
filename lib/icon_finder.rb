@@ -42,15 +42,6 @@ module IconFinder
     # remove duplicate slash in path
     iconPath.squeeze!('/')
 
-    puts <<~EOT.lightblue
-      Icon infomation:
-
-      Name = #{iconName}
-      File = #{iconPath}
-      Type = #{iconMime}
-      Size = #{iconSize}
-    EOT
-
     return iconPath, iconSize, iconMime
   end
 end
