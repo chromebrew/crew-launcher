@@ -7,11 +7,11 @@ end.to_h
 
 Port = 25500
 SharePath = "#{CREW_PREFIX}/share/"
-TmpDir = "/tmp/crew-integration"
+TmpDir = "/tmp/crew-integration/"
 DataDir = "#{SharePath}/crew-integration/"
 PWAIconPath = "#{DataDir}/icon/"
 ConfigPath = "#{DataDir}/json/"
-CrewIcon = "#{PWAIconPath}/icons/brew.png"
+CrewIcon = "#{PWAIconPath}/brew.png"
 
 DesktopSearchGlob = [
   "#{SharePath}/applications/%s.desktop"

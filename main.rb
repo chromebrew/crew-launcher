@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # - * - coding: UTF-8 - * -
 
+require 'fileutils'
 require 'socket'
 require 'uri'
 require 'json'
@@ -10,6 +11,8 @@ require_relative 'lib/const'
 Dir.glob('lib/*.rb') do |file|
   require_relative file
 end
+
+FileUtils.mkdir_p TmpDir, ConfigDir
 
 def getUUID (exec)
   uuid = `grep -lR "'desktop_entry_file': '#{ARGV[1]} .*'" #{ConfigPath}/*.json 2> /dev/null`.lines[0]
@@ -140,7 +143,7 @@ def StartWebDaemon
   Process.daemon(true, true)
 
   # redirect output to log
-  log = File.open("#{TmpDir}/log/daemon.log", 'w')
+  log = File.open("#{TmpDir}/daemon.log", 'w')
   log.sync = true
   STDOUT.reopen(log)
   STDERR.reopen(log)
