@@ -7,8 +7,8 @@ end.to_h
 
 Port = 25500
 SharePath = "#{CREW_PREFIX}/share/"
-CacheDir = "#{ENV['XDG_CACHE_HOME']}/crew-integration"
-DataDir = "#{ENV['XDG_CONFIG_HOME']}/crew-integration/"
+TmpDir = "/tmp/crew-integration"
+DataDir = "#{SharePath}/crew-integration/"
 PWAIconPath = "#{DataDir}/icon/"
 ConfigPath = "#{DataDir}/json/"
 CrewIcon = "#{PWAIconPath}/icons/brew.png"

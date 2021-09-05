@@ -19,8 +19,8 @@ end
 def stopExistingDaemon
   # kill existing server daemon
   begin
-    if File.exist?("#{CacheDir}/daemon.pid")
-      daemon_pid = File.read("#{CacheDir}/daemon.pid").to_i
+    if File.exist?("#{TmpDir}/daemon.pid")
+      daemon_pid = File.read("#{TmpDir}/daemon.pid").to_i
       Process.kill(15, daemon_pid)
     end
   rescue Errno::ESRCH
@@ -118,16 +118,6 @@ def StartWebDaemon
       retuen false
     end
 
-    if Args['use-wayland']
-      wm_type = 'wayland'
-      ENV['WAYLAND_DISPLAY'] ||= 'wayland-0'
-    else
-      wm_type = 'x11'
-      ENV['DISPLAY'] ||= ':0'
-    end
-
-    ENV['GDK_BACKEND'] = ENV['CLUTTER_BACKEND'] = wm_type
-
     profile = JSON.parse(File.read(file), symbolize_names: true)
 
     if shortcut
@@ -135,21 +125,29 @@ def StartWebDaemon
     else
       cmd = profile[:exec]
     end
-    
-    log = File.open("#{CacheDir}/log/cmd/#{uuid}.log", 'w')
-    spawn(cmd, {[:out, :err] => log})
+
+    log = "#{TmpDir}/cmdlog/#{uuid}.log"
+    spawn(cmd, {[:out, :err] => File.open(log, 'w')})
+
+    puts <<~EOT, nil
+      Profile: #{file}
+      CmdLine: #{cmd}
+      Output: #{log}
+    EOT
   end
 
   # turn into a background procss
-  Process.daemon(true)
-  File.write("#{CacheDir}/daemon.pid", Process.pid)
+  Process.daemon(true, true)
 
   # redirect output to log
-  log = File.open("#{CacheDir}/log/daemon.log", 'w')
+  log = File.open("#{TmpDir}/log/daemon.log", 'w')
+  log.sync = true
   STDOUT.reopen(log)
   STDERR.reopen(log)
 
-  #p "#{CacheDir}/pwa-daemon.pid"
+  puts "Daemon running with PID #{Process.pid}", nil
+  File.write("#{TmpDir}/daemon.pid", Process.pid)
+
   HTTPServer.start do |sock, uri, method|
     _, uuid, action = uri.path.split('/', 3)
     params = URI.decode_www_form(uri.query.to_s).to_h
