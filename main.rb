@@ -12,7 +12,7 @@ Dir.glob('lib/*.rb') do |file|
   require_relative file
 end
 
-FileUtils.mkdir_p TmpDir, ConfigDir
+FileUtils.mkdir_p [ "#{TmpDir}/cmdlog/", ConfigPath ]
 
 def getUUID (exec)
   uuid = `grep -lR "'desktop_entry_file': '#{ARGV[1]} .*'" #{ConfigPath}/*.json 2> /dev/null`.lines[0]
