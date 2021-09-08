@@ -7,6 +7,10 @@ require 'uri'
 require 'json'
 require 'securerandom'
 require_relative 'lib/const'
+require_relative 'lib/desktop_file'
+require_relative 'lib/function'
+require_relative 'lib/http_server'
+require_relative 'lib/icon_finder'
 
 Dir.glob('lib/*.rb') do |file|
   require_relative file
