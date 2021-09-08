@@ -22,6 +22,16 @@ IconSearchGlob = [
   "#{PWAIconPath}/%s"
 ]
 
+HELP = <<EOF
+crew-launcher: Add Linux applications to Chrome OS launcher
+
+Usage:
+  stop            stop launcher server if running
+  start           start launcher server for shortcut
+  help            show this message
+  new <command>   add an applications to launcher
+EOF
+
 # get locale settings from LC_MESSAGES env variable
 unless ENV['LC_MESSAGES'].to_s.empty?
   LC_MESSAGES = ENV['LC_MESSAGES'].scan(/([\._@]?)([^\._@]+)/).to_h
