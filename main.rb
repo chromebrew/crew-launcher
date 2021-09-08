@@ -12,10 +12,6 @@ require_relative 'lib/function'
 require_relative 'lib/http_server'
 require_relative 'lib/icon_finder'
 
-Dir.glob('lib/*.rb') do |file|
-  require_relative file
-end
-
 FileUtils.mkdir_p [ "#{TmpDir}/cmdlog/", ConfigPath ]
 
 def getUUID (exec)
@@ -106,9 +102,9 @@ def InstallPWA (cmd)
       return
     else
       # search requested file in `pwa/` directory
-      if File.file?("pwa/#{filename}")
+      if File.file?("#{LibPath}/pwa/#{filename}")
         sock.print HTTPHeader(200, MimeType[ File.extname(filename) ])
-        sock.write File.read("pwa/#{filename}")
+        sock.write File.read("#{LibPath}/pwa/#{filename}")
       else
         sock.print HTTPHeader(404)
       end
@@ -168,7 +164,7 @@ def StartWebDaemon
     when 'run'
       LaunchApp(uuid, shortcut: params['shortcut'])
       sock.print HTTPHeader(200, 'text/html')
-      sock.write File.read('pwa/app.html')
+      sock.write File.read("#{LibPath}/pwa/app.html")
     when 'stop'
       sock.print HTTPHeader(200)
       sock.print 'Server terminated: User interrupt.'
