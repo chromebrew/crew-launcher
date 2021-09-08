@@ -1,11 +1,9 @@
-CREW_PREFIX = (ENV['CREW_PREFIX'].to_s.empty?) ? '/usr/local' : ENV['CREW_PREFIX']
-require_relative "#{CREW_PREFIX}/lib/crew/lib/color.rb"
-
 Args = ARGV.grep(/^--/).map do |arg|
   [ arg.sub('--', ''), true ]
 end.to_h
 
 Port = 25500
+CREW_PREFIX = (ENV['CREW_PREFIX'].to_s.empty?) ? '/usr/local' : ENV['CREW_PREFIX']
 LibPath = File.expand_path('..', __dir__)
 SharePath = "#{CREW_PREFIX}/share/"
 TmpDir = "/tmp/crew-integration/"
