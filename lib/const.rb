@@ -6,7 +6,7 @@ Args = ARGV.grep(/^--/).map do |arg|
 end.to_h
 
 Port = 25500
-LibPath = __dir__
+LibPath = File.expand_path('..', __dir__)
 SharePath = "#{CREW_PREFIX}/share/"
 TmpDir = "/tmp/crew-integration/"
 DataDir = "#{SharePath}/crew-integration/"
