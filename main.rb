@@ -195,8 +195,8 @@ when 'uuid'
 when 'help', 'h', ''
   puts HELP
 else
-  print <<~EOT
+  print <<~EOT.lightred
     crew-launcher: invalid option #{ARGV[0]}
-    Run `crew-integration help` for more information.
+    Run `crew-launcher help` for more information.
   EOT
 end
