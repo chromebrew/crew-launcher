@@ -1,10 +1,12 @@
 module DesktopFile
-  def self.find(app) # find a .desktop file from paths in DesktopSearchGlob
-    results = Dir.glob(DesktopSearchGlob.map {|p| p % app })
-    if results.any?
-      return results[0]
+  def self.find(pkg) # find a .desktop file from package's filelist
+    abort "Package #{pkg} isn't installed.".lightred unless File.exist?("#{CREW_PREFIX}/etc/crew/meta/#{pkg}.filelist")
+
+    results = `grep -m1 '\.desktop$' #{CREW_PREFIX}/etc/crew/meta/#{pkg}.filelist`.chomp
+    unless results.empty?
+      return results
     else
-      abort "Cannot find an `.desktop` file for #{app} :/".lightred
+      abort "Cannot find an `.desktop` file for #{pkg} :/".lightred
     end
   end
 

@@ -12,10 +12,6 @@ PWAIconPath = "#{DataDir}/icon/"
 ConfigPath = "#{DataDir}/json/"
 CrewIcon = "#{PWAIconPath}/brew.png"
 
-DesktopSearchGlob = [
-  "#{SharePath}/applications/%s.desktop"
-]
-
 IconSearchGlob = [
   "#{SharePath}/icons/*/*/*/%s",
   "#{SharePath}/pixmaps/%s",
@@ -26,12 +22,12 @@ HELP = <<EOF
 crew-launcher: Add Linux applications to Chrome OS launcher
 
 Usage:
-  new <desktop entry file>     add an application to launcher
-  remove <desktop entry file>  remove existing profile(s) for application(s)
-  stop                         stop launcher server if running
-  start                        start launcher server for shortcut
-  help                         show this message
-  uuid <desktop entry file>    returns the UUID of specific profile(s)
+  new <pkgname|*.desktop file>     add an application to launcher
+  remove <pkgname|*.desktop file>  remove existing profile(s) for application(s)
+  stop                             stop launcher server if running
+  start                            start launcher server for shortcut
+  help                             show this message
+  uuid <pkgname|*.desktop file>    returns the UUID of specific profile(s)
 EOF
 
 # get locale settings from LC_MESSAGES env variable

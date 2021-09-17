@@ -6,8 +6,8 @@ require 'socket'
 require 'uri'
 require 'json'
 require 'securerandom'
-require_relative 'lib/color'
 require_relative 'lib/const'
+require_relative "#{CREW_PREFIX}/lib/crew/lib/color"
 require_relative 'lib/desktop_file'
 require_relative 'lib/function'
 require_relative 'lib/http_server'
@@ -15,9 +15,16 @@ require_relative 'lib/icon_finder'
 
 FileUtils.mkdir_p [ "#{TmpDir}/cmdlog/", ConfigPath ]
 
-def getUUID (f)
-  uuid = `grep -lR "'desktop_entry_file': '#{f}.desktop'" #{ConfigPath}/*.json 2> /dev/null`.lines[0]
-  return uuid
+def getUUID (arg)
+  # get desktop entry file path from package's filelist if a package name is given
+  if arg[0] != '/'
+    file = DesktopFile.find(arg)
+  else
+    file = arg
+  end
+
+  matched_file = `grep -l "\\"desktop_entry_file\\":\\"#{file}\\"" #{ConfigPath}/*.json 2> /dev/null`.lines(chomp: true)
+  return File.basename(matched_file[0], '.json') if matched_file.any?
 end
 
 def stopExistingDaemon
@@ -26,14 +33,23 @@ def stopExistingDaemon
     if File.exist?("#{TmpDir}/daemon.pid")
       daemon_pid = File.read("#{TmpDir}/daemon.pid").to_i
       Process.kill(15, daemon_pid)
+      puts "Server daemon PID #{daemon_pid} stopped.".lightgreen
     end
   rescue Errno::ESRCH
   end
 end
 
-def CreateProfile(file)
+def CreateProfile(arg)
+  # get desktop entry file path from package's filelist if a package name is given
+  if arg[0] != '/'
+    file = DesktopFile.find(arg)
+  else
+    file = arg
+  end
+
+  abort "crew-launcher: No such file or directory -- '#{file}'".lightred unless File.exist?(file)
   # convert parsed hash into json format
-  desktop = DesktopFile.parse( DesktopFile.find((file)) )
+  desktop = DesktopFile.parse(file)
 
   duplicate_profile_uuid = getUUID(file)
 
@@ -46,7 +62,7 @@ def CreateProfile(file)
 
   iconPath, iconSize, iconType = IconFinder.find(desktop['Desktop Entry']['Icon'])
   profile = {
-    desktop_entry_file: "#{cmd}.desktop",
+    desktop_entry_file: "#{file}",
     background_color: "black",
     theme_color: "black",
     name: desktop['Desktop Entry']['Name'],
@@ -77,8 +93,8 @@ def CreateProfile(file)
   return uuid, profile
 end
 
-def InstallPWA (cmd)
-  uuid, manifest = CreateProfile(cmd)
+def InstallPWA (file)
+  uuid, manifest = CreateProfile(file)
   # open a new tab in Chrome OS using dbus
   system 'dbus-send',
          '--system',
@@ -135,11 +151,13 @@ def StartWebDaemon
     spawn(cmd, {[:out, :err] => File.open(log, 'w')})
 
     puts <<~EOT, nil
-      Profile: #{file}
-      CmdLine: #{cmd}
-      Output: #{log}
+      Profile: #{files.queeze('/')}
+      CmdLine: #{cmd.queeze('/')}
+      Output: #{log.queeze('/')}
     EOT
   end
+
+  puts "Server daemon PID #{Process.pid} started.".lightgreen
 
   # turn into a background procss
   Process.daemon(true, true)
@@ -180,19 +198,21 @@ when 'new'
   stopExistingDaemon()
   InstallPWA(ARGV[1])
   StartWebDaemon()
-when 'server'
+when 'start-server'
   stopExistingDaemon()
   StartWebDaemon()
+when 'stop-server'
+  stopExistingDaemon()
 when 'remove'
   uuid = getUUID(ARGV[1])
 
   if uuid
-    File.remove("#{ConfigPath}/#{uuid}.json")
+    File.delete("#{ConfigPath}/#{uuid}.json")
   else
     error "Error: Cannot find a profile for #{ARGV[1]} :/"
   end
 when 'uuid'
-  ARGV.each do |arg|
+  ARGV.drop(1).each do |arg|
     if (uuid = getUUID(arg))
       puts uuid
     else
