@@ -196,7 +196,7 @@ when 'help', 'h', nil
   puts HELP
 else
   print <<~EOT.lightred
-    crew-launcher: invalid option `#{ARGV[0]}`
+    crew-launcher: invalid option '#{ARGV[0]}'
     Run `crew-launcher help` for more information.
   EOT
 end
