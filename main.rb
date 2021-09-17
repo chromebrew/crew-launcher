@@ -57,7 +57,7 @@ def CreateProfile(arg)
     uuid = duplicate_profile_uuid
   else
     uuid = SecureRandom.uuid
-    File.remove("#{ConfigPath}/#{duplicate_profile_uuid}.json") if duplicate_profile_uuid
+    File.delete("#{ConfigPath}/#{duplicate_profile_uuid}.json") if duplicate_profile_uuid
   end
 
   iconPath, iconSize, iconType = IconFinder.find(desktop['Desktop Entry']['Icon'])
