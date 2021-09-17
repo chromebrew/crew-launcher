@@ -1,5 +1,9 @@
+def puts (*msg)
+  msg.map {|s| s.squeeze('/') }
+end
+
 def error (*msg)
-  STDERR.puts *(msg.map(&:lightred))
+  msg.map {|s| s.to_s.lightred }
 end
 
 class Verbose
