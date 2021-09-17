@@ -192,4 +192,11 @@ when 'remove'
   end
 when 'uuid'
   puts getUUID(ARGV[1])
+when 'help', 'h', ''
+  puts HELP
+else
+  error <<~EOT
+    crew-launcher: invalid option #{ARGV[0]}
+    Run `crew-integration help` for more information.
+  EOT
 end
