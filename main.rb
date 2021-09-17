@@ -15,8 +15,8 @@ require_relative 'lib/icon_finder'
 
 FileUtils.mkdir_p [ "#{TmpDir}/cmdlog/", ConfigPath ]
 
-def getUUID (exec)
-  uuid = `grep -lR "'desktop_entry_file': '#{ARGV[1]} .*'" #{ConfigPath}/*.json 2> /dev/null`.lines[0]
+def getUUID (f)
+  uuid = `grep -lR "'desktop_entry_file': '#{f}.desktop'" #{ConfigPath}/*.json 2> /dev/null`.lines[0]
   return uuid
 end
 
@@ -31,11 +31,11 @@ def stopExistingDaemon
   end
 end
 
-def CreateProfile(cmd = nil, filename: nil)
+def CreateProfile(file)
   # convert parsed hash into json format
-  desktop = DesktopFile.parse( DesktopFile.find((filename || cmd)) )
+  desktop = DesktopFile.parse( DesktopFile.find((file)) )
 
-  duplicate_profile_uuid = getUUID(cmd)
+  duplicate_profile_uuid = getUUID(file)
 
   if Args['update'] and duplicate_profile_uuid
     uuid = duplicate_profile_uuid
@@ -46,6 +46,7 @@ def CreateProfile(cmd = nil, filename: nil)
 
   iconPath, iconSize, iconType = IconFinder.find(desktop['Desktop Entry']['Icon'])
   profile = {
+    desktop_entry_file: "#{cmd}.desktop",
     background_color: "black",
     theme_color: "black",
     name: desktop['Desktop Entry']['Name'],
@@ -191,7 +192,13 @@ when 'remove'
     error "Error: Cannot find a profile for #{ARGV[1]} :/"
   end
 when 'uuid'
-  puts getUUID(ARGV[1])
+  ARGV.each do |arg|
+    if (uuid = getUUID(arg))
+      puts uuid
+    else
+      error "#{arg}: No matching profile found."
+    end
+  end
 when 'help', 'h', nil
   puts HELP
 else
