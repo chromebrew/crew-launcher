@@ -208,6 +208,7 @@ when 'remove'
 
   if uuid
     File.delete("#{ConfigPath}/#{uuid}.json")
+    puts "Profile #{"#{ConfigPath}/#{uuid}.json"} removed!".lightgreen
   else
     error "Error: Cannot find a profile for #{ARGV[1]} :/"
   end
