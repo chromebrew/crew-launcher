@@ -195,7 +195,7 @@ when 'uuid'
 when 'help', 'h', ''
   puts HELP
 else
-  error <<~EOT
+  print <<~EOT
     crew-launcher: invalid option #{ARGV[0]}
     Run `crew-integration help` for more information.
   EOT
