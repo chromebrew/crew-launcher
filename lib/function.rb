@@ -1,5 +1,5 @@
 def puts (*msg)
-  msg.map {|s| s.squeeze('/') }
+  msg.map {|s| s.to_s.squeeze('/') }
 end
 
 def error (*msg)
