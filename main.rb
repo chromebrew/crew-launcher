@@ -151,9 +151,9 @@ def StartWebDaemon
     spawn(cmd, {[:out, :err] => File.open(log, 'w')})
 
     puts <<~EOT, nil
-      Profile: #{files.queeze('/')}
-      CmdLine: #{cmd.queeze('/')}
-      Output: #{log.queeze('/')}
+      Profile: #{file.squeeze('/')}
+      CmdLine: #{cmd.squeeze('/')}
+      Output: #{log.squeeze('/')}
     EOT
   end
 
