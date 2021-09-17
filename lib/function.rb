@@ -1,4 +1,4 @@
-def error (msg = '', *opts)
+def error (*msg)
   STDERR.puts *(msg.map(&:lightred))
 end
 
