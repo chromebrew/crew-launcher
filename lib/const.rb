@@ -19,7 +19,7 @@ IconSearchGlob = [
 ]
 
 HELP = <<EOF
-crew-launcher: Add Linux applications to Chrome OS launcher
+crew-launcher: Add Chromebrew applications to launcher
 
 Usage:
   new <pkgname|*.desktop file>     add an application to launcher
