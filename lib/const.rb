@@ -24,8 +24,8 @@ crew-launcher: Add Chromebrew applications to launcher
 Usage:
   new <pkgname|*.desktop file>     add an application to launcher
   remove <pkgname|*.desktop file>  remove existing profile(s) for application(s)
-  stop                             stop launcher server if running
-  start                            start launcher server for shortcut
+  stop-server                      stop launcher server if running
+  start-server                     start launcher server for shortcut
   help                             show this message
   uuid <pkgname|*.desktop file>    returns the UUID of specific profile(s)
 EOF
