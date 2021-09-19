@@ -10,7 +10,7 @@
 ## Installation
 - This package is available at `crew`, install it by execute the following:
 ```bash
-crew install launcher
+crew install crew_launcher
 ```
 ## Help needed?
 - Submit new issues [here](https://github.com/skycocker/chromebrew/issues)<sup>*</sup>
