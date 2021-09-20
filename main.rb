@@ -7,7 +7,7 @@ require 'uri'
 require 'json'
 require 'securerandom'
 require_relative 'lib/const'
-require_relative "#{CREW_PREFIX}/lib/crew/lib/color"
+require_relative "lib/color"
 require_relative 'lib/desktop_file'
 require_relative 'lib/function'
 require_relative 'lib/http_server'
@@ -88,7 +88,7 @@ def CreateProfile(arg)
         { action: action, name: v['Name'], url: url, exec: exec}
       end
   }
- 
+
   File.write("#{ConfigPath}/#{uuid}.json", profile.to_json)
   return uuid, profile
 end
@@ -120,9 +120,9 @@ def InstallPWA (file)
       return
     else
       # search requested file in `pwa/` directory
-      if File.file?("#{LibPath}/pwa/#{filename}")
+      if File.file?("#{AppPath}/pwa/#{filename}")
         sock.print HTTPHeader(200, MimeType[ File.extname(filename) ])
-        sock.write File.read("#{LibPath}/pwa/#{filename}")
+        sock.write File.read("#{AppPath}/pwa/#{filename}")
       else
         sock.print HTTPHeader(404)
       end
@@ -184,7 +184,7 @@ def StartWebDaemon
     when 'run'
       LaunchApp(uuid, shortcut: params['shortcut'])
       sock.print HTTPHeader(200, 'text/html')
-      sock.write File.read("#{LibPath}/pwa/app.html")
+      sock.write File.read("#{AppPath}/pwa/app.html")
     when 'stop'
       sock.print HTTPHeader(200)
       sock.print 'Server terminated: User interrupt.'
@@ -194,14 +194,22 @@ def StartWebDaemon
 end
 
 case ARGV[0]
+when 'list'
+  puts 'Installed launcher apps:'
+  Dir["#{AppPath}/json/*.json"].each do |json|
+    desktop_file = `jq .desktop_entry_file #{json} | sed -e 's,\",,g'`.chomp
+    app_name = File.basename(desktop_file, '.desktop')
+    uuid = File.basename(json, '.json')
+    puts "#{app_name}: #{uuid}"
+  end
 when 'new'
   stopExistingDaemon()
   InstallPWA(ARGV[1])
   StartWebDaemon()
-when 'start-server'
+when 'start', 'start-server'
   stopExistingDaemon()
   StartWebDaemon()
-when 'stop-server'
+when 'stop', 'stop-server'
   stopExistingDaemon()
 when 'remove'
   uuid = getUUID(ARGV[1])

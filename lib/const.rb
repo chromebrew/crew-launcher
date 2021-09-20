@@ -4,7 +4,7 @@ end.to_h
 
 Port = 25500
 CREW_PREFIX = (ENV['CREW_PREFIX'].to_s.empty?) ? '/usr/local' : ENV['CREW_PREFIX']
-LibPath = "#{CREW_PREFIX}/lib/crew-launcher/"
+AppPath = "#{CREW_PREFIX}/share/crew-launcher/"
 SharePath = "#{CREW_PREFIX}/share/"
 TmpDir = "/tmp/crew-launcher/"
 DataDir = "#{SharePath}/crew-launcher/"
