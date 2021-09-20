@@ -3,5 +3,5 @@ const url = new URL(window.location),
       dark_mode = params.get('dark_mode');
 
 if (dark_mode == '1') {
-  document.getElementsByTagName('body').style.backgroundColor = '#121212';
+  document.body.style.backgroundColor = '#121212';
 }
