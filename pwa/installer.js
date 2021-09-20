@@ -3,7 +3,9 @@ navigator.serviceWorker.register('./sw.js')
 self.addEventListener('appinstalled', (event) => {
   // tell socket server to stop
   fetch('/stop', { method: 'POST' }).then( () => {
-    alert('You can close this window now.');
+    // show close message
+    document.getElementById('installBut').style.visibility = 'hidden';
+    document.getElementById('closeMsg').style.visibility = 'visible';
   });
 });
 
