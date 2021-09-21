@@ -120,9 +120,9 @@ def InstallPWA (file)
       return
     else
       # search requested file in `pwa/` directory
-      if File.file?("#{LibPath}/pwa/#{filename}")
+      if File.file?("#{DataDir}/pwa/#{filename}")
         sock.print HTTPHeader(200, MimeType[ File.extname(filename) ])
-        sock.write File.read("#{LibPath}/pwa/#{filename}")
+        sock.write File.read("#{DataDir}/pwa/#{filename}")
       else
         sock.print HTTPHeader(404)
       end
@@ -184,7 +184,7 @@ def StartWebDaemon
     when 'run'
       LaunchApp(uuid, shortcut: params['shortcut'])
       sock.print HTTPHeader(200, 'text/html')
-      sock.write File.read("#{LibPath}/pwa/app.html")
+      sock.write File.read("#{DataDir}/pwa/app.html")
     when 'stop'
       sock.print HTTPHeader(200)
       sock.print 'Server terminated: User interrupt.'
