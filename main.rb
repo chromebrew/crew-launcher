@@ -41,11 +41,11 @@ end
 
 def CreateProfile(arg)
   # get desktop entry file path from package's filelist if a package name is given
-  if arg[0] != '/'
+  #if arg[0] != '/'
     file = DesktopFile.find(arg)
-  else
-    file = arg
-  end
+  #else
+  #  file = arg
+  #end
 
   abort "crew-launcher: No such file or directory -- '#{file}'".lightred unless File.exist?(file)
   # convert parsed hash into json format
@@ -60,7 +60,7 @@ def CreateProfile(arg)
     File.delete("#{ConfigPath}/#{duplicate_profile_uuid}.json") if duplicate_profile_uuid
   end
 
-  iconPath, iconSize, iconType = IconFinder.find(desktop['Desktop Entry']['Icon'])
+  iconPath, iconSize, iconType = IconFinder.find(arg, desktop['Desktop Entry']['Icon'])
   profile = {
     desktop_entry_file: "#{file}",
     background_color: "black",

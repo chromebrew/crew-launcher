@@ -7,9 +7,9 @@ def error (*msg)
 end
 
 class Verbose
-  @verbose = Args['--verbose']
+  @verbose = Args['verbose']
   def self.puts (*msg)
-    STDOUT.puts *(msg.map(&:white)) if @verbose
+    msg.map {|s| STDOUT.puts(s.to_s.squeeze('/').white) } if @verbose
   end
 
   def self.verbose?

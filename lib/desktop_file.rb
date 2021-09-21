@@ -4,6 +4,7 @@ module DesktopFile
 
     results = `grep -m1 '\.desktop$' #{CREW_PREFIX}/etc/crew/meta/#{pkg}.filelist`.chomp
     unless results.empty?
+      Verbose.puts "Desktop Entry File found: #{results}"
       return results
     else
       abort "Cannot find an `.desktop` file for #{pkg} :/".lightred
