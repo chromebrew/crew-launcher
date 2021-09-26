@@ -197,7 +197,7 @@ case ARGV[0]
 when 'list'
   puts 'Installed launcher apps:'
   Dir["#{CONFIGDIR}/*.json"].each do |json|
-    desktop_file = `jq .desktop_entry_file #{json} | sed -e 's,\",,g'`.chomp
+    desktop_file = JSON.parse( File.read(json) )['desktop_entry_file']
     app_name = File.basename(desktop_file, '.desktop')
     uuid = File.basename(json, '.json')
     puts "#{app_name}: #{uuid}"

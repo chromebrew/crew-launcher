@@ -1,1 +1,0 @@
-/usr/local/lib/crew//lib/color.rb
