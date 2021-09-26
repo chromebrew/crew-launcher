@@ -27,11 +27,19 @@ def getUUID (arg)
   return File.basename(matched_file[0], '.json') if matched_file.any?
 end
 
+def getPID
+  if File.exist?("#{TMPDIR}/daemon.pid")
+    return File.read("#{TMPDIR}/daemon.pid").to_i
+  else
+    return 0
+  end
+end
+
 def stopExistingDaemon
   # kill existing server daemon
   begin
-    if File.exist?("#{TMPDIR}/daemon.pid")
-      daemon_pid = File.read("#{TMPDIR}/daemon.pid").to_i
+    daemon_pid = getPID
+    if daemon_pid > 0
       Process.kill(15, daemon_pid)
       FileUtils.rm_f "#{TMPDIR}/daemon.pid"
       puts "crew-launcher server daemon PID #{daemon_pid} stopped.".lightgreen
@@ -195,7 +203,7 @@ def StartWebDaemon
 end
 
 case ARGV[0]
-when 'list'
+when 'list', 'show'
   puts 'Installed launcher apps:'
   Dir["#{CONFIGDIR}/*.json"].each do |json|
     desktop_file = JSON.parse( File.read(json) )['desktop_entry_file']
@@ -203,7 +211,7 @@ when 'list'
     uuid = File.basename(json, '.json')
     puts "#{app_name}: #{uuid}"
   end
-when 'add'
+when 'add', 'new'
   stopExistingDaemon()
   InstallPWA(ARGV[1])
   StartWebDaemon()
@@ -211,9 +219,9 @@ when 'start', 'start-server'
   stopExistingDaemon()
   StartWebDaemon()
 when 'stat', 'status'
-  if File.exist?("#{TMPDIR}/daemon.pid")
-    pid = File.read("#{TMPDIR}/daemon.pid").to_i
-    puts "crew-launcher server daemon running with PID #{pid}.".lightgreen
+  daemon_pid = getPID
+  if daemon_pid > 0
+    puts "crew-launcher server daemon running with PID #{daemon_pid}.".lightgreen
   else
     puts "crew-launcher server daemon is not running.".lightred
   end
@@ -221,7 +229,6 @@ when 'stop', 'stop-server'
   stopExistingDaemon()
 when 'remove'
   uuid = getUUID(ARGV[1])
-
   if uuid
     File.delete("#{CONFIGDIR}/#{uuid}.json")
     puts "Profile #{CONFIGDIR}/#{uuid}.json removed!".lightgreen

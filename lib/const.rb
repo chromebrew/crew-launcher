@@ -21,14 +21,14 @@ HELP = <<EOF
 crew-launcher: Add Chromebrew applications to launcher
 
 Usage:
-  add <pkgname|*.desktop file>     add an application to launcher
-  list                             display all installed launcher apps
-  remove <pkgname|*.desktop file>  remove existing profile(s) for application(s)
-  start|start-server               start launcher server for shortcut
-  stat|status                      display launcher server status
-  stop|stop-server                 stop launcher server if running
-  help                             show this message
-  uuid <pkgname|*.desktop file>    returns the UUID of specific profile(s)
+  add|new <pkgname|*.desktop file>  add an application to launcher
+  list|show                         display all installed launcher apps
+  remove <pkgname|*.desktop file>   remove existing profile(s) for application(s)
+  start|start-server                start launcher server for shortcut
+  stat|status                       display launcher server status
+  stop|stop-server                  stop launcher server if running
+  help                              show this message
+  uuid <pkgname|*.desktop file>     returns the UUID of specific profile(s)
 EOF
 
 # get locale settings from LC_MESSAGES env variable
