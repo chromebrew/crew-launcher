@@ -7,13 +7,13 @@ require 'uri'
 require 'json'
 require 'securerandom'
 require_relative 'lib/const'
-require_relative "lib/color"
+require_relative 'lib/color'
 require_relative 'lib/desktop_file'
 require_relative 'lib/function'
 require_relative 'lib/http_server'
 require_relative 'lib/icon_finder'
 
-FileUtils.mkdir_p [ "#{TmpDir}/cmdlog/", ConfigPath ]
+FileUtils.mkdir_p [ "#{TMPDIR}/cmdlog/", CONFIGDIR ]
 
 def getUUID (arg)
   # get desktop entry file path from package's filelist if a package name is given
@@ -23,17 +23,17 @@ def getUUID (arg)
     file = arg
   end
 
-  matched_file = `grep -l "\\"desktop_entry_file\\":\\"#{file}\\"" #{ConfigPath}/*.json 2> /dev/null`.lines(chomp: true)
+  matched_file = `grep -l "\\"desktop_entry_file\\":\\"#{file}\\"" #{CONFIGDIR}/*.json 2> /dev/null`.lines(chomp: true)
   return File.basename(matched_file[0], '.json') if matched_file.any?
 end
 
 def stopExistingDaemon
   # kill existing server daemon
   begin
-    if File.exist?("#{TmpDir}/daemon.pid")
-      daemon_pid = File.read("#{TmpDir}/daemon.pid").to_i
+    if File.exist?("#{TMPDIR}/daemon.pid")
+      daemon_pid = File.read("#{TMPDIR}/daemon.pid").to_i
       Process.kill(15, daemon_pid)
-      puts "Server daemon PID #{daemon_pid} stopped.".lightgreen
+      puts "crew-launcher server daemon PID #{daemon_pid} stopped.".lightgreen
     end
   rescue Errno::ESRCH
   end
@@ -57,7 +57,7 @@ def CreateProfile(arg)
     uuid = duplicate_profile_uuid
   else
     uuid = SecureRandom.uuid
-    File.delete("#{ConfigPath}/#{duplicate_profile_uuid}.json") if duplicate_profile_uuid
+    File.delete("#{CONFIGDIR}/#{duplicate_profile_uuid}.json") if duplicate_profile_uuid
   end
 
   iconPath, iconSize, iconType = IconFinder.find(desktop['Desktop Entry']['Icon'])
@@ -89,7 +89,7 @@ def CreateProfile(arg)
       end
   }
 
-  File.write("#{ConfigPath}/#{uuid}.json", profile.to_json)
+  File.write("#{CONFIGDIR}/#{uuid}.json", profile.to_json)
   return uuid, profile
 end
 
@@ -103,7 +103,7 @@ def InstallPWA (file)
          '--dest=org.chromium.UrlHandlerService',
          '/org/chromium/UrlHandlerService',
          'org.chromium.UrlHandlerServiceInterface.OpenUrl',
-         "string:http://localhost:#{Port}/#{uuid}/installer.html"
+         "string:http://localhost:#{PORT}/#{uuid}/installer.html"
 
   HTTPServer.start do |sock, uri, method|
     filename = File.basename(uri.path)
@@ -111,7 +111,7 @@ def InstallPWA (file)
     case filename
     when 'manifest.webmanifest'
       sock.print HTTPHeader(200, 'application/manifest+json')
-      sock.write File.read("#{ConfigPath}/#{uuid}.json")
+      sock.write File.read("#{CONFIGDIR}/#{uuid}.json")
     when 'appicon'
       sock.print HTTPHeader(200, manifest[:icons][0][:type])
       sock.write File.binread(manifest[:icons][0][:path])
@@ -120,9 +120,9 @@ def InstallPWA (file)
       return
     else
       # search requested file in `pwa/` directory
-      if File.file?("#{AppPath}/pwa/#{filename}")
+      if File.file?("#{APPDIR}/pwa/#{filename}")
         sock.print HTTPHeader(200, MimeType[ File.extname(filename) ])
-        sock.write File.read("#{AppPath}/pwa/#{filename}")
+        sock.write File.read("#{APPDIR}/pwa/#{filename}")
       else
         sock.print HTTPHeader(404)
       end
@@ -132,7 +132,7 @@ end
 
 def StartWebDaemon
   def LaunchApp(uuid, shortcut: false)
-    file = "#{ConfigPath}/#{uuid}.json"
+    file = "#{CONFIGDIR}/#{uuid}.json"
 
     unless File.exist?(file)
       error "#{uuid}: Profile not found!"
@@ -147,7 +147,7 @@ def StartWebDaemon
       cmd = profile[:exec]
     end
 
-    log = "#{TmpDir}/cmdlog/#{uuid}.log"
+    log = "#{TMPDIR}/cmdlog/#{uuid}.log"
     spawn(cmd, {[:out, :err] => File.open(log, 'w')})
 
     puts <<~EOT, nil
@@ -157,25 +157,25 @@ def StartWebDaemon
     EOT
   end
 
-  puts "Server daemon PID #{Process.pid} started.".lightgreen
+  puts "crew-launcher server daemon PID #{Process.pid} started.".lightgreen
 
   # turn into a background procss
   Process.daemon(true, true)
 
   # redirect output to log
-  log = File.open("#{TmpDir}/daemon.log", 'w')
+  log = File.open("#{TMPDIR}/daemon.log", 'w')
   log.sync = true
   STDOUT.reopen(log)
   STDERR.reopen(log)
 
-  puts "Daemon running with PID #{Process.pid}", nil
-  File.write("#{TmpDir}/daemon.pid", Process.pid)
+  puts "crew-launcher server daemon running with PID #{Process.pid}", nil
+  File.write("#{TMPDIR}/daemon.pid", Process.pid)
 
   HTTPServer.start do |sock, uri, method|
     _, uuid, action = uri.path.split('/', 3)
     params = URI.decode_www_form(uri.query.to_s).to_h
 
-    unless File.exist?("#{ConfigPath}/#{uuid}.json")
+    unless File.exist?("#{CONFIGDIR}/#{uuid}.json")
       sock.print HTTPHeader(404)
       next
     end
@@ -184,10 +184,10 @@ def StartWebDaemon
     when 'run'
       LaunchApp(uuid, shortcut: params['shortcut'])
       sock.print HTTPHeader(200, 'text/html')
-      sock.write File.read("#{AppPath}/pwa/app.html")
+      sock.write File.read("#{APPDIR}/pwa/app.html")
     when 'stop'
       sock.print HTTPHeader(200)
-      sock.print 'Server terminated: User interrupt.'
+      sock.print 'crew-launcher server terminated: User interrupt.'
       exit 0
     end
   end
@@ -196,27 +196,34 @@ end
 case ARGV[0]
 when 'list'
   puts 'Installed launcher apps:'
-  Dir["#{AppPath}/json/*.json"].each do |json|
+  Dir["#{CONFIGDIR}/*.json"].each do |json|
     desktop_file = `jq .desktop_entry_file #{json} | sed -e 's,\",,g'`.chomp
     app_name = File.basename(desktop_file, '.desktop')
     uuid = File.basename(json, '.json')
     puts "#{app_name}: #{uuid}"
   end
-when 'new'
+when 'add'
   stopExistingDaemon()
   InstallPWA(ARGV[1])
   StartWebDaemon()
 when 'start', 'start-server'
   stopExistingDaemon()
   StartWebDaemon()
+when 'stat', 'status'
+  pid = `ps ax | grep "crew-launcher start" | grep -v grep | xargs | cut -d' ' -f1 2> /dev/null`.chomp
+  if "#{pid}" != ""
+    puts "crew-launcher server daemon running with PID #{pid}.".lightgreen
+  else
+    puts "crew-launcher server daemon is not running.".lightred
+  end
 when 'stop', 'stop-server'
   stopExistingDaemon()
 when 'remove'
   uuid = getUUID(ARGV[1])
 
   if uuid
-    File.delete("#{ConfigPath}/#{uuid}.json")
-    puts "Profile #{"#{ConfigPath}/#{uuid}.json"} removed!".lightgreen
+    File.delete("#{CONFIGDIR}/#{uuid}.json")
+    puts "Profile #{CONFIGDIR}/#{uuid}.json removed!".lightgreen
   else
     error "Error: Cannot find a profile for #{ARGV[1]} :/"
   end

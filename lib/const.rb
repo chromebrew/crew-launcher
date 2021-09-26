@@ -2,30 +2,31 @@ Args = ARGV.grep(/^--/).map do |arg|
   [ arg.sub('--', ''), true ]
 end.to_h
 
-Port = 25500
+PORT = 25500
 CREW_PREFIX = (ENV['CREW_PREFIX'].to_s.empty?) ? '/usr/local' : ENV['CREW_PREFIX']
-AppPath = "#{CREW_PREFIX}/share/crew-launcher/"
-SharePath = "#{CREW_PREFIX}/share/"
-TmpDir = "/tmp/crew-launcher/"
-DataDir = "#{SharePath}/crew-launcher/"
-PWAIconPath = "#{DataDir}/icon/"
-ConfigPath = "#{DataDir}/json/"
-CrewIcon = "#{PWAIconPath}/brew.png"
+SHAREDIR = "#{CREW_PREFIX}/share"
+APPDIR = "#{SHAREDIR}/crew-launcher"
+TMPDIR = "/tmp/crew-launcher"
+ICONDIR = "#{APPDIR}/icon"
+CONFIGDIR = "#{APPDIR}/json"
+CREWICON = "#{ICONDIR}/brew.png"
 
 IconSearchGlob = [
-  "#{SharePath}/icons/*/*/*/%s",
-  "#{SharePath}/pixmaps/%s",
-  "#{PWAIconPath}/%s"
+  "#{SHAREDIR}/icons/*/*/*/%s",
+  "#{SHAREDIR}/pixmaps/%s",
+  "#{ICONDIR}/%s"
 ]
 
 HELP = <<EOF
 crew-launcher: Add Chromebrew applications to launcher
 
 Usage:
-  new <pkgname|*.desktop file>     add an application to launcher
+  add <pkgname|*.desktop file>     add an application to launcher
+  list                             display all installed launcher apps
   remove <pkgname|*.desktop file>  remove existing profile(s) for application(s)
-  stop-server                      stop launcher server if running
-  start-server                     start launcher server for shortcut
+  start|start-server               start launcher server for shortcut
+  stat|status                      display launcher server status
+  stop|stop-server                 stop launcher server if running
   help                             show this message
   uuid <pkgname|*.desktop file>    returns the UUID of specific profile(s)
 EOF
