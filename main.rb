@@ -42,7 +42,7 @@ def stopExistingDaemon
     if daemon_pid > 0
       Process.kill(15, daemon_pid)
       FileUtils.rm_f "#{TMPDIR}/daemon.pid"
-      puts "crew-launcher server daemon PID #{daemon_pid} stopped.".lightgreen
+      puts "crew-launcher server daemon with PID #{daemon_pid} stopped.".lightred
     end
   rescue Errno::ESRCH
   end
@@ -166,10 +166,10 @@ def StartWebDaemon
     EOT
   end
 
-  puts "crew-launcher server daemon PID #{Process.pid} started.".lightgreen
-
-  # turn into a background procss
+  # turn into a background process
   Process.daemon(true, true)
+
+  puts "crew-launcher server daemon with PID #{Process.pid} started.".lightgreen
 
   # redirect output to log
   log = File.open("#{TMPDIR}/daemon.log", 'w')
@@ -177,7 +177,6 @@ def StartWebDaemon
   STDOUT.reopen(log)
   STDERR.reopen(log)
 
-  puts "crew-launcher server daemon running with PID #{Process.pid}", nil
   File.write("#{TMPDIR}/daemon.pid", Process.pid)
 
   HTTPServer.start do |sock, uri, method|
@@ -221,7 +220,7 @@ when 'start', 'start-server'
 when 'stat', 'status'
   daemon_pid = getPID
   if daemon_pid > 0
-    puts "crew-launcher server daemon running with PID #{daemon_pid}.".lightgreen
+    puts "crew-launcher server daemon with PID #{daemon_pid} is running.".lightgreen
   else
     puts "crew-launcher server daemon is not running.".lightred
   end
