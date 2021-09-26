@@ -33,6 +33,7 @@ def stopExistingDaemon
     if File.exist?("#{TMPDIR}/daemon.pid")
       daemon_pid = File.read("#{TMPDIR}/daemon.pid").to_i
       Process.kill(15, daemon_pid)
+      FileUtils.rm_f "#{TMPDIR}/daemon.pid"
       puts "crew-launcher server daemon PID #{daemon_pid} stopped.".lightgreen
     end
   rescue Errno::ESRCH
@@ -210,8 +211,8 @@ when 'start', 'start-server'
   stopExistingDaemon()
   StartWebDaemon()
 when 'stat', 'status'
-  pid = `ps ax | grep "crew-launcher start" | grep -v grep | xargs | cut -d' ' -f1 2> /dev/null`.chomp
-  if "#{pid}" != ""
+  if File.exist?("#{TMPDIR}/daemon.pid")
+    pid = File.read("#{TMPDIR}/daemon.pid").to_i
     puts "crew-launcher server daemon running with PID #{pid}.".lightgreen
   else
     puts "crew-launcher server daemon is not running.".lightred
