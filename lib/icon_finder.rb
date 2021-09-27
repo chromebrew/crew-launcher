@@ -48,7 +48,7 @@ module IconFinder
     # remove duplicate slash in path
     iconPath.squeeze!('/')
 
-    Verbose.puts "Icon found: #{iconPath}" unless iconPath == CrewIcon
+    Verbose.puts "Icon found: #{iconPath}" unless iconPath == CREWICON
     return iconPath, iconSize, iconMime
   end
 end
