@@ -29,7 +29,7 @@ def HTTPHeader (status_code, content_type = 'text/plain', extra = nil)
 end
 
 module HTTPServer
-  def self.start(port = Port, &block)
+  def self.start(port = PORT, &block)
     server = TCPServer.new('localhost', port)
     # add REUSEADDR option to prevent kernel from keeping the port
     server.setsockopt(:SOCKET, :REUSEADDR, true)

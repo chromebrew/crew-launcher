@@ -19,11 +19,11 @@ module DesktopFile
       group.strip!
       header = group.lines[0][/\[(.+)\]/, 1]
       entries = group.scan(/^(.+)=(.*)/)
-      
+
       if Locale
         # get all localized entries
         localizedKeys = entries.keys.grep(/\[(#{Locale[:lang]})(_#{Locale[:country]})?(@#{Locale[:modifier]})?\]$/)
-      
+
         entries.map! do |k, v|
           # replace values with localized one if available
           matchedKey = localizedKeys.grep(/^#{k}/)[0]

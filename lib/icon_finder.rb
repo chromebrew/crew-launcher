@@ -9,7 +9,7 @@ end
 
 def convert_img (icon, size = '512x512') # convert icon to .png format
   basename = File.basename(icon, '.*')
-  output = "#{PWAIconPath}/#{basename}.png"
+  output = "#{ICONDIR}/#{basename}.png"
 
   system 'convert', '-resize', size, icon, output, exception: true
   return output, size, 'image/png'
@@ -42,13 +42,13 @@ module IconFinder
       iconPath, iconSize, iconMime = convert_img(xpm)
     else
       error 'Unable to find an icon :/'
-      iconPath, iconSize, iconMime = CrewIcon, '546x546', 'image/png'
+      iconPath, iconSize, iconMime = CREWICON, '546x546', 'image/png'
     end
- 
+
     # remove duplicate slash in path
     iconPath.squeeze!('/')
 
-    Verbose.puts "Icon found: #{iconPath}" unless iconPath == CrewIcon
+    Verbose.puts "Icon found: #{iconPath}" unless iconPath == CREWICON
     return iconPath, iconSize, iconMime
   end
 end
