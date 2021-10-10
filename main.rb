@@ -14,6 +14,7 @@ require_relative 'lib/http_server'
 require_relative 'lib/icon_finder'
 
 FileUtils.mkdir_p [ "#{TMPDIR}/cmdlog/", CONFIGDIR ]
+Process.setproctitle 'Chromebrew Launcher'
 
 def getUUID (arg)
   # get desktop entry file path from package's filelist if a package name is given
