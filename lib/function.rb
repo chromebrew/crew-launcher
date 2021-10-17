@@ -1,3 +1,5 @@
+# function.rb: functions with frequently used codes
+
 def puts (*msg)
   msg.map {|s| STDOUT.puts(s.to_s.squeeze('/')) }
 end
