@@ -1,6 +1,8 @@
-# Chromebrew Launcher
+<p align="center"><img src="/images/brew.png" alt="Chromebrew logo" /></p>
 
-## Add X/Wayland applications shortcut to Chrome/Chromium OS launcher
+<h1 align="center">Chromebrew Launcher</h1>
+
+<p align="center">Add X/Wayland applications shortcut to Chrome/Chromium OS launcher</p>
 
 ## Supported Systems
 - All architecture supported by Chromebrew
@@ -13,13 +15,10 @@
 crew install crew_launcher
 ```
 ## Help needed?
-- Submit new issues [here](https://github.com/skycocker/chromebrew/issues)<sup>*</sup>
+- Submit new issues [here](https://github.com/chromebrew/crew-launcher/issues)<sup>*</sup>
 <br>
 <sup>*</sup> <em>Please check existing issues before submitting a new one.</em>
 
 ## Screenshots
-### Launcher
 <p align="center"><img src="/screenshot/launcher.png" alt="Launcher Screenshot" /></p>
-
-### Dock
 <p align="center"><img src="/screenshot/dock.png" alt="Dock Screenshot" /></p>
