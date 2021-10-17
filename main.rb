@@ -29,6 +29,7 @@ def getUUID (arg)
 end
 
 def getPID
+  # get pid of running daemon
   if File.exist?("#{TMPDIR}/daemon.pid")
     return File.read("#{TMPDIR}/daemon.pid").to_i
   else
