@@ -11,7 +11,11 @@ def convert_img (icon, size = '512x512') # convert icon to .png format
   basename = File.basename(icon, '.*')
   output = "#{ICONDIR}/#{basename}.png"
 
-  system 'convert', '-resize', size, icon, output, exception: true
+  if icon =~ /512x512/
+    FileUtils.cp icon, output
+  else
+    system 'convert', '-resize', size, icon, output, exception: true
+  end
   return output, size, 'image/png'
 end
 
@@ -21,11 +25,20 @@ module IconFinder
     fileList = File.readlines("#{CREW_PREFIX}/etc/crew/meta/#{pkgName}.filelist", chomp: true)
     svg = fileList.grep(/#{iconName}\.svg$/)[0]
     xpm = fileList.grep(/#{iconName}\.xpm$/)[0]
-    png = fileList.grep(/#{iconName}\.png$/).sort_by do |path|
-      # TODO: always use theme if available
-      # get the highest resolution file
-      path[/\d+x/].to_i
-    end[-1]
+    png = ''
+    fileList.grep(/#{iconName}\.png$/).each do |path|
+      if path =~ /512x512/
+        png = path
+        break
+      end
+    end
+    unless png =~ /512x512/
+      png = fileList.grep(/#{iconName}\.png$/).sort_by do |path|
+        # TODO: always use theme if available
+        # get the highest resolution file
+        path[/\d+x/].to_i
+      end[-1]
+    end
 
     # priority: 'app.svg' > 'app.png' > 'app.xpm' > Chromebrew Icon
     if svg

@@ -2,7 +2,7 @@ module DesktopFile
   def self.find(pkg) # find a .desktop file from package's filelist
     abort "Package #{pkg} isn't installed.".lightred unless File.exist?("#{CREW_PREFIX}/etc/crew/meta/#{pkg}.filelist")
 
-    results = `grep -m1 '\.desktop$' #{CREW_PREFIX}/etc/crew/meta/#{pkg}.filelist`.chomp
+    results = `grep -m1 '\\.desktop$' #{CREW_PREFIX}/etc/crew/meta/#{pkg}.filelist`.chomp
     unless results.empty?
       Verbose.puts "Desktop Entry File found: #{results}"
       return results
