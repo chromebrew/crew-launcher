@@ -17,6 +17,10 @@ def convert_img (icon, size = '512x512') # convert icon to .png format
     system 'convert', '-resize', size, icon, output, exception: true
   end
   return output, size, 'image/png'
+rescue
+  # conversion failed. try to make it work with png
+  Verbose.puts "image conversion failed. defaulting to the original icon"
+  return icon, size, 'image/png'
 end
 
 module IconFinder
