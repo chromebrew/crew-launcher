@@ -1,0 +1,30 @@
+h1 {
+  font-size: 2.1rem;
+  margin: 20px 0 0 0;
+}
+
+#appIcon {
+  margin: 30px 0 20px 0;
+  height: 80px;
+  width: 80px;
+  object-fit: contain;
+  cursor: pointer;
+  pointer-events: visible;
+}
+
+#appName {
+  background-color: transparent;
+  color: var(--txt-color);
+  height: 50px;
+  width: 2in;
+  text-align: center;
+  border: none;
+  border-bottom: 1px solid var(--txt-color);
+  font-size: 1.2rem;
+  padding: 0 5px 0 5px;
+}
+
+#appName:focus {
+  outline: none;
+  border-bottom: 1px solid var(--txt-color);
+}

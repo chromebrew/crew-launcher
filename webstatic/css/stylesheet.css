@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@100;200;300;400;500;700;900&display=swap');
+@import url('/static/css/theme.css');
+@import url('/static/css/button.css');
+
+* {
+  font-family: 'Google Sans', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 400;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+img {
+  user-select: none;
+  pointer-events: none;
+}
+
+hr {
+  width: calc(100% - 50px);
+  border-color: #afafaf6a;
+}
+
+.popup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  user-select: none;
+  height: 25px;
+  bottom: 50px;
+  border-radius: 10px;
+  padding: 10px 10px 10px 10px;
+  background-color: rgb(37, 101, 211);
+  color: white;
+  transition: bottom 0.3s ease-in-out;
+}
+
+.popup.close {
+  bottom: -50px;
+}
+
+.popup > img {
+  height: 100%;
+  object-fit: contain;
+}
+
+.popup > p {
+  text-align: center;
+  font-size: 1.2rem;
+  user-select: none;
+}
+
+.popup > * {
+  margin: 0 5px 0 5px;
+}
+
+#appList {
+  text-align: center;
+  border-radius: 10px;
+  border: 2px solid var(--txt-color);
+  padding: 10px 10px 10px 10px;
+  margin: 0 50px 30px 50px;
+  width: calc(100% - 100px);
+  height: 80%;
+  overflow-y: scroll;
+}
+
+#appList > div {
+  display: inline-block;
+  height: 100px;
+  width: 100px;
+  cursor: pointer;
+  margin: 7px 5px 7px 5px;
+}
+
+#appList > div > * {
+  width: 100%;
+}
+
+#appList > div > p {
+  height: 40px;
+  margin: 0;
+
+  text-overflow: ellipsis;
+  text-align: center;
+  overflow: hidden;
+}
+
+#appList > div > img {
+  height: calc(100% - 40px);
+  object-fit: contain;
+}
+
+.inline_center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inline_center > * {
+  margin: 0 5px 0 5px;
+}
