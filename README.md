@@ -13,10 +13,9 @@
 crew install crew_launcher
 ```
 ## Help needed?
-- Submit new issues [here](https://github.com/skycocker/chromebrew/issues)<sup>*</sup>
+- Submit new issues [here](https://github.com/chromebrew/crew-launcher/issues)<sup>*</sup>
 <br>
 <sup>*</sup> <em>Please check existing issues before submitting a new one.</em>
-
 ## Screenshots
 ### Launcher
 <p align="center"><img src="/screenshot/launcher.png" alt="Launcher Screenshot" /></p>
