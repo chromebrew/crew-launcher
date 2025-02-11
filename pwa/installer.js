@@ -14,5 +14,5 @@ self.addEventListener('beforeinstallprompt', (e) => {
 });
 
 installBut.addEventListener('click', () => {
-  self.InstallPrompt.prompt();
+  self.InstallPrompt.prompt('');
 });
