@@ -3,9 +3,9 @@
 ## Add X/Wayland applications shortcut to Chrome/Chromium OS launcher
 
 ## Supported Systems
-- All architecture supported by Chromebrew
-- Chrome/Chromium OS based system (CloudReady) with 40+ version
-- Stable channel (recommend)
+- All architectures supported by Chromebrew
+- Chrome/Chromium OS based system (CloudReady) with above version 40
+- Stable channel is recommend
 
 ## Installation
 - This package is available at `crew`, install it by execute the following:
